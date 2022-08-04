@@ -20,7 +20,7 @@ using HyPlayer.Classes;
 using NeteaseCloudMusicApi;
 using Newtonsoft.Json.Linq;
 using Opportunity.LrcParser;
-using File = TagLib.File;
+using ATL;
 
 #endregion
 
@@ -1288,7 +1288,7 @@ public static class HyPlayList
         var mdp = await sf.Properties.GetMusicPropertiesAsync();
 
         if (nocheck163 ||
-            !The163KeyHelper.TryGetMusicInfo(File.Create(new UwpStorageFileAbstraction(sf)).Tag,
+            !The163KeyHelper.TryGetMusicInfo(new Track(await sf.OpenStreamForReadAsync(),sf.ContentType),
                 out var mi))
         {
             //TagLib.File afi = TagLib.File.Create(new UwpStorageFileAbstraction(sf), ReadStyle.Average);

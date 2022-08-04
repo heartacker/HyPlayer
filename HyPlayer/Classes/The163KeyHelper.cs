@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TagLib;
+using ATL;
 
 #endregion
 
@@ -30,18 +30,18 @@ internal static class The163KeyHelper
     /// <summary>
     ///     尝试获取网易云音乐ID
     /// </summary>
-    /// <param name="tag"></param>
+    /// <param name="theTrack"></param>
     /// <param name="trackId"></param>
     /// <returns></returns>
-    public static bool TryGetTrackId(Tag tag, out int trackId)
+    public static bool TryGetTrackId(Track theTrack, out int trackId)
     {
-        if (tag is null)
-            throw new ArgumentNullException(nameof(tag));
+        if (theTrack is null)
+            throw new ArgumentNullException(nameof(theTrack));
 
         trackId = 0;
-        var the163Key = tag.Comment;
+        var the163Key = theTrack.Comment;
         if (!Is163KeyCandidate(the163Key))
-            the163Key = tag.Description;
+            the163Key = theTrack.Description;
         if (!Is163KeyCandidate(the163Key))
             return false;
         try
@@ -81,15 +81,15 @@ internal static class The163KeyHelper
         return true;
     }
 
-    public static bool TryGetMusicInfo(Tag tag, out The163KeyClass KeyStruct)
+    public static bool TryGetMusicInfo(Track theTrack, out The163KeyClass KeyStruct)
     {
-        if (tag is null)
-            throw new ArgumentNullException(nameof(tag));
+        if (theTrack is null)
+            throw new ArgumentNullException(nameof(theTrack));
 
         KeyStruct = new The163KeyClass();
-        var the163Key = tag.Comment;
+        var the163Key = theTrack.Comment;
         if (!Is163KeyCandidate(the163Key))
-            the163Key = tag.Description;
+            the163Key = theTrack.Description;
         if (!Is163KeyCandidate(the163Key))
             return false;
         try
@@ -129,7 +129,7 @@ internal static class The163KeyHelper
         return true;
     }
 
-    public static bool TrySetMusicInfo(Tag tag, The163KeyClass key)
+    public static bool TrySetMusicInfo(Track theTrack, The163KeyClass key)
     {
         try
         {
@@ -141,7 +141,7 @@ internal static class The163KeyHelper
                 resultArray = cryptoTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
             }
 
-            tag.Description = "163 key(Don't modify):" + Convert.ToBase64String(resultArray, 0, resultArray.Length);
+            theTrack.Description = "163 key(Don't modify):" + Convert.ToBase64String(resultArray, 0, resultArray.Length);
             return true;
         }
         catch
@@ -153,13 +153,13 @@ internal static class The163KeyHelper
     /// <summary>
     ///     尝试设置163音乐信息到文件
     /// </summary>
-    /// <param name="tag"></param>
+    /// <param name="theTrack"></param>
     /// <param name="trackId"></param>
     /// <returns></returns>
-    public static bool TrySetMusicInfo(Tag tag, PlayItem pi)
+    public static bool TrySetMusicInfo(Track theTrack, PlayItem pi)
     {
-        if (tag is null)
-            throw new ArgumentNullException(nameof(tag));
+        if (theTrack is null)
+            throw new ArgumentNullException(nameof(theTrack));
 
         try
         {
@@ -176,7 +176,7 @@ internal static class The163KeyHelper
                 format = pi.SubExt.ToLower()
             };
             key.artist = pi.Artist.Select(t => new List<object> { t.name, int.Parse(t.id) }).ToList();
-            return TrySetMusicInfo(tag, key);
+            return TrySetMusicInfo(theTrack, key);
         }
         catch
         {
@@ -184,11 +184,11 @@ internal static class The163KeyHelper
         }
     }
 
-    public static string Get163Key(Tag tag)
+    public static string Get163Key(Track theTrack)
     {
-        var the163Key = tag.Comment;
+        var the163Key = theTrack.Comment;
         if (!Is163KeyCandidate(the163Key))
-            the163Key = tag.Description;
+            the163Key = theTrack.Description;
         if (!Is163KeyCandidate(the163Key))
             return null;
         return the163Key;

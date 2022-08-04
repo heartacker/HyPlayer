@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kawazu", "Kawazu\Kawazu\Kaw
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeteaseCloudMusicApi", "NeteaseCloudMusicApi\NeteaseCloudMusicApi\NeteaseCloudMusicApi.csproj", "{C20D7EA5-6DB8-42B3-855D-75470CBE667F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATL", "atldotnet\ATL\ATL.csproj", "{A033DD3A-370E-42F8-B52B-DC6626F9600B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,26 @@ Global
 		{C20D7EA5-6DB8-42B3-855D-75470CBE667F}.Release|x64.Build.0 = Release|x64
 		{C20D7EA5-6DB8-42B3-855D-75470CBE667F}.Release|x86.ActiveCfg = Release|x86
 		{C20D7EA5-6DB8-42B3-855D-75470CBE667F}.Release|x86.Build.0 = Release|x86
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Debug|ARM.Build.0 = Debug|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Debug|x64.Build.0 = Debug|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Debug|x86.Build.0 = Debug|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Release|ARM.ActiveCfg = Release|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Release|ARM.Build.0 = Release|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Release|ARM64.Build.0 = Release|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Release|x64.ActiveCfg = Release|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Release|x64.Build.0 = Release|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Release|x86.ActiveCfg = Release|Any CPU
+		{A033DD3A-370E-42F8-B52B-DC6626F9600B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
