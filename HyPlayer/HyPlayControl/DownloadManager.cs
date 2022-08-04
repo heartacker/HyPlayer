@@ -159,7 +159,8 @@ internal class DownloadObject
                 {
                     pic = DownloadManager.AlbumPicturesCache[ncsong.Album.id];
                 }
-                
+                theTrack.EmbeddedPictures.Clear();
+                theTrack.EmbeddedPictures.Add(pic);
                 await Task.Run(() => theTrack.Save());
                 resultFileStream.Close();
             }
