@@ -15,8 +15,7 @@ using Windows.Storage.Streams;
 using HyPlayer.Classes;
 using Microsoft.Toolkit.Uwp.Helpers;
 using NeteaseCloudMusicApi;
-using TagLib;
-using File = TagLib.File;
+using TagLibUWP;
 
 #endregion
 
@@ -119,21 +118,17 @@ internal class DownloadObject
                     (await downloadOperation.GetResultRandomAccessStreamReference().OpenReadAsync()).AsStreamForRead(),
                     await downloadOperation.ResultFile.OpenStreamForWriteAsync(), downloadOperation.ResultFile.Name);
                     */
-                var streamAbscraction = new UwpStorageFileAbstraction(downloadOperation.ResultFile);
-                var file = File.Create(streamAbscraction);
+                var file = await Task.Run(() => TagManager.ReadFile(downloadOperation.ResultFile)); 
                 if (Common.Setting.write163Info)
                     The163KeyHelper.TrySetMusicInfo(file.Tag, dontuseme);
                 //写相关信息
                 file.Tag.Album = ncsong.Album.name;
-                file.Tag.Performers = ncsong.Artist.Select(t => t.name).ToArray();
+                file.Tag.Artist = string.Join(";",ncsong.Artist.Select(t => t.name).ToArray());
                 file.Tag.Title = ncsong.songname;
                 file.Tag.Track = (uint)(ncsong.TrackId == -1 ? ncsong.Order + 1 : ncsong.TrackId);
-                file.Tag.Disc = uint.Parse(Regex.Match(ncsong.CDName, "[0-9]+").Value);
                 //file.Save();
 
                 Picture pic;
-                if (!DownloadManager.AlbumPicturesCache.ContainsKey(ncsong.Album.id))
-                {
                     var ras = RandomAccessStreamReference.CreateFromUri(new Uri(ncsong.Album.cover + "?param=" +
                         StaticSource
                             .PICSIZE_DOWNLOAD_ALBUMCOVER));
@@ -153,23 +148,14 @@ internal class DownloadObject
                     {
                         outputStream = httpStream;
                     }
-
-                    pic = new Picture(ByteVector.FromStream(outputStream.AsStreamForRead()));
-                    DownloadManager.AlbumPicturesCache[ncsong.Album.id] = pic;
-                }
-                else
-                {
-                    pic = DownloadManager.AlbumPicturesCache[ncsong.Album.id];
-                }
-
-                file.Tag.Pictures = new IPicture[]
-                {
-                    pic
-                };
-                file.Tag.Pictures[0].MimeType = "image/jpeg";
-                file.Tag.Pictures[0].Description = "cover.jpg";
-                file.Save();
-                streamAbscraction.Release();
+                    var pictureStream = outputStream.AsStream();
+                    var pictureByte = new byte[pictureStream.Length];
+                    await pictureStream.ReadAsync(pictureByte, 0, (int)pictureStream.Length);
+                    pic = new Picture();
+                    pic.Data = pictureByte;
+                    pic.MIMEType = "image/jpeg";
+                    file.Tag.Image = pic;
+                    await Task.Run(() => TagManager.WriteFile(downloadOperation.ResultFile, file.Tag));
             }
             catch (Exception ex)
             {
@@ -374,7 +360,6 @@ internal static class DownloadManager
     public static List<DownloadObject> DownloadLists = new();
     public static BackgroundDownloader Downloader = new();
     public static List<Task> WritingTasks = new();
-    public static Dictionary<string, Picture> AlbumPicturesCache = new();
 
     public static bool CheckDownloadAbilityAndToast()
     {
@@ -445,7 +430,6 @@ internal static class DownloadManager
             notifier.Show(toast);
             */
             Common.AddToTeachingTipLists("下载全部完成");
-            AlbumPicturesCache.Clear();
             _timer.Stop();
             Timered = false;
             return;
@@ -465,48 +449,5 @@ internal static class DownloadManager
         }
 
         songs.ForEach(t => { DownloadLists.Add(new DownloadObject(t)); });
-    }
-}
-
-public class UwpStorageFileAbstraction : File.IFileAbstraction
-{
-    private readonly IStorageFile file;
-
-
-    public UwpStorageFileAbstraction(IStorageFile file)
-    {
-        if (file == null)
-            throw new ArgumentNullException(nameof(file));
-
-        this.file = file;
-        Name = file.Name;
-        ReadStream = file.OpenStreamForReadAsync().GetAwaiter().GetResult();
-        WriteStream = file.OpenStreamForWriteAsync().GetAwaiter().GetResult();
-    }
-
-    public UwpStorageFileAbstraction(Stream readStream, Stream writeStream, string name = "HyPlayer Music")
-    {
-        ReadStream = readStream;
-        WriteStream = writeStream;
-        Name = name;
-    }
-
-
-    public string Name { get; }
-
-    public Stream ReadStream { get; }
-
-    public Stream WriteStream { get; }
-
-    public void CloseStream(Stream stream)
-    {
-    }
-
-    public void Release()
-    {
-        WriteStream.Close();
-        WriteStream.Dispose();
-        ReadStream.Close();
-        ReadStream.Dispose();
     }
 }

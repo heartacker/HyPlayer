@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TagLib;
+using TagLibUWP;
 
 #endregion
 
@@ -40,8 +40,6 @@ internal static class The163KeyHelper
 
         trackId = 0;
         var the163Key = tag.Comment;
-        if (!Is163KeyCandidate(the163Key))
-            the163Key = tag.Description;
         if (!Is163KeyCandidate(the163Key))
             return false;
         try
@@ -88,8 +86,6 @@ internal static class The163KeyHelper
 
         KeyStruct = new The163KeyClass();
         var the163Key = tag.Comment;
-        if (!Is163KeyCandidate(the163Key))
-            the163Key = tag.Description;
         if (!Is163KeyCandidate(the163Key))
             return false;
         try
@@ -141,7 +137,7 @@ internal static class The163KeyHelper
                 resultArray = cryptoTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
             }
 
-            tag.Description = "163 key(Don't modify):" + Convert.ToBase64String(resultArray, 0, resultArray.Length);
+            tag.Comment = "163 key(Don't modify):" + Convert.ToBase64String(resultArray, 0, resultArray.Length);
             return true;
         }
         catch
@@ -187,8 +183,6 @@ internal static class The163KeyHelper
     public static string Get163Key(Tag tag)
     {
         var the163Key = tag.Comment;
-        if (!Is163KeyCandidate(the163Key))
-            the163Key = tag.Description;
         if (!Is163KeyCandidate(the163Key))
             return null;
         return the163Key;

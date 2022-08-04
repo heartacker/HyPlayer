@@ -11,7 +11,7 @@ using Windows.Storage;
 using HyPlayer.HyPlayControl;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using File = TagLib.File;
+using TagLibUWP;
 
 #endregion
 
@@ -40,7 +40,7 @@ internal static class NCMFile
         var Info = GetNCMMusicInfo(stream);
         var encStream = GetEncryptedStream(stream);
         encStream.CopyTo(await destinationFile.OpenStreamForWriteAsync());
-        var tagFile = File.Create(new UwpStorageFileAbstraction(destinationFile));
+        var tagFile = await Task.Run(() => TagManager.ReadFile(destinationFile));
         The163KeyHelper.TrySetMusicInfo(tagFile.Tag, Info);
         return true;
     }
