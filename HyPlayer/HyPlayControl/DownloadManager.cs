@@ -161,8 +161,12 @@ internal class DownloadObject
                 }
                 theTrack.EmbeddedPictures.Clear();
                 theTrack.EmbeddedPictures.Add(pic);
+                Settings.FileBufferSize = resultFileStream.Length > int.MaxValue
+                ? int.MaxValue
+                : (int)resultFileStream.Length;
                 await Task.Run(() => theTrack.Save());
                 resultFileStream.Close();
+                theTrack = null;
             }
             catch (Exception ex)
             {
